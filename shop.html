@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Metro Shop | PUBG Mobile</title>
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    color: #fff;
+    min-height: 100vh;
+    padding: 20px 20px 100px 20px;
+    overflow-x: hidden;
+    position: relative;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    animation: slideDown 0.6s ease-out;
+}
+
+.header-title h1 {
+    font-size: 1.8em;
+    background: linear-gradient(45deg, #FFD700, #FFA500);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 900;
+    letter-spacing: 1px;
+}
+
+.header-title p {
+    color: #aaa;
+    font-size: 0.8em;
+    margin-top: 5px;
+}
+
+.balance-display {
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 165, 0, 0.1));
+    border: 2px solid #FFD700;
+    padding: 10px 20px;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0 5px 20px rgba(255, 215, 0, 0.3);
+}
+
+.balance-display .amount {
+    font-size: 1.2em;
+    font-weight: 900;
+    color: #FFD700;
+}
+
+.balance-display .label {
+    font-size: 0.7em;
+    color: #aaa;
+    text-transform: uppercase;
+}
+
+.container {
+    max-width: 500px;
+    margin: 0 auto;
+    padding-bottom: 20px;
+}
+
+.category {
+    margin-bottom: 25px;
+    animation: fadeIn 0.8s ease-out;
+}
+
+.category-title {
+    font-size: 1.2em;
+    color: #FFD700;
+    margin-bottom: 15px;
+    padding-left: 10px;
+    border-left: 4px solid #FFD700;
+    font-weight: 700;
+}
+
+.items-grid {
+    display: grid;
+    gap: 12px;
+}
+
+.item {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 15px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.item:active::before {
+    left: 100%;
+}
+
+.item:active {
+    transform: scale(0.98);
+}
+
+.item-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    z-index: 1;
+}
+
+.item-left {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    gap: 12px;
+}
+
+.item-icon {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+    filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.3));
+}
+
+.item-info {
+    flex: 1;
+}
+
+.item-name {
+    font-size: 1em;
+    font-weight: 700;
+    margin-bottom: 5px;
+    color: #fff;
+}
+
+.item-price {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 1.1em;
+    font-weight: 900;
+    color: #00FF88;
+    text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+}
+
+.item-badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: linear-gradient(45deg, #FF6B6B, #FF4757);
+    padding: 3px 10px;
+    border-radius: 15px;
+    font-size: 0.65em;
+    font-weight: 700;
+    text-transform: uppercase;
+    box-shadow: 0 3px 10px rgba(255, 71, 87, 0.4);
+    z-index: 2;
+}
+
+.add-cart-btn {
+    background: linear-gradient(45deg, #FFD700, #FFA500);
+    border: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: 700;
+    color: #000;
+    font-size: 0.85em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+    white-space: nowrap;
+}
+
+.add-cart-btn:active {
+    transform: scale(0.95);
+}
+
+.cart-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(45deg, #FFD700, #FFA500);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 8px 30px rgba(255, 215, 0, 0.5);
+    z-index: 1000;
+    transition: all 0.3s ease;
+}
+
+.cart-button:active {
+    transform: scale(0.9);
+}
+
+.cart-button .cart-icon {
+    font-size: 2em;
+    color: #000;
+}
+
+.cart-count {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #FF4757;
+    color: #fff;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8em;
+    font-weight: 700;
+    box-shadow: 0 2px 10px rgba(255, 71, 87, 0.5);
+}
+
+.cart-modal {
+    position: fixed;
+    bottom: -100%;
+    left: 0;
+    right: 0;
+    background: linear-gradient(135deg, #1e1e2f, #2a2a3e);
+    border-radius: 30px 30px 0 0;
+    padding: 25px;
+    max-height: 70vh;
+    overflow-y: auto;
+    z-index: 2000;
+    transition: bottom 0.4s ease;
+    box-shadow: 0 -10px 50px rgba(0, 0, 0, 0.5);
+}
+
+.cart-modal.show {
+    bottom: 0;
+}
+
+.cart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid rgba(255, 215, 0, 0.3);
+}
+
+.cart-header h2 {
+    color: #FFD700;
+    font-size: 1.5em;
+}
+
+.close-cart {
+    font-size: 1.8em;
+    cursor: pointer;
+    color: #aaa;
+    transition: color 0.3s;
+}
+
+.close-cart:active {
+    color: #FF4757;
+}
+
+.cart-items {
+    margin-bottom: 20px;
+}
+
+.cart-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 12px;
+    border-radius: 12px;
+    margin-bottom: 10px;
+}
+
+.cart-item-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+}
+
+.cart-item-icon {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+}
+
+.cart-item-name {
+    font-weight: 600;
+    font-size: 0.9em;
+}
+
+.cart-item-price {
+    color: #00FF88;
+    font-weight: 700;
+    margin-right: 10px;
+}
+
+.remove-item {
+    color: #FF4757;
+    font-size: 1.2em;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.cart-total {
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 165, 0, 0.1));
+    padding: 15px;
+    border-radius: 15px;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.cart-total .label {
+    color: #aaa;
+    font-size: 0.9em;
+    margin-bottom: 5px;
+}
+
+.cart-total .amount {
+    font-size: 1.8em;
+    font-weight: 900;
+    color: #FFD700;
+}
+
+.checkout-btn {
+    width: 100%;
+    background: linear-gradient(45deg, #00FF88, #00CC6F);
+    border: none;
+    padding: 15px;
+    border-radius: 25px;
+    font-weight: 900;
+    color: #000;
+    font-size: 1.1em;
+    cursor: pointer;
+    box-shadow: 0 5px 20px rgba(0, 255, 136, 0.4);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.checkout-btn:active {
+    transform: scale(0.98);
+}
+
+.empty-cart {
+    text-align: center;
+    padding: 40px 20px;
+    color: #aaa;
+}
+
+.empty-cart-icon {
+    font-size: 4em;
+    margin-bottom: 15px;
+    opacity: 0.3;
+}
+
+#notification {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-100px);
+    background: linear-gradient(45dx, #00FF88, #00CC6F);
+    color: #000;
+    padding: 12px 25px;
+    border-radius: 50px;
+    font-weight: 700;
+    box-shadow: 0 10px 30px rgba(0, 255, 136, 0.4);
+    z-index: 3000;
+    opacity: 0;
+    transition: all 0.5s ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.9em;
+}
+
+#notification.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+.pulse {
+    animation: pulse 2s infinite;
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+    <div class="header-title">
+        <h1>🎮 METRO SHOP</h1>
+        <p>PUBG Mobile Premium Items</p>
+    </div>
+    <div class="balance-display">
+        <div class="amount">💰 15,000</div>
+        <div class="label">Balance</div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="category">
+        <div class="category-title">🛡 Himoya va Jihozlar</div>
+        <div class="items-grid">
+            <div class="item">
+                <span class="item-badge">TOP</span>
+                <div class="item-content">
+                    <div class="item-left">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='70' font-size='70'%3E🛡%3C/text%3E%3C/svg%3E" class="item-icon" alt="Armor">
+                        <div class="item-info">
+                            <div class="item-name">6LV Armor</div>
+                            <div class="item-price">💰 5,000</div>
+                        </div>
+                    </div>
+                    <button class="add-cart-btn" onclick="addToCart('6LV Armor (Level 3)', 5000, '🛡')">Savatga</button>
+                </div>
+            </div>
+
+            <div class="item">
+                <div class="item-content">
+                    <div class="item-left">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='70' font-size='70'%3E🪖%3C/text%3E%3C/svg%3E" class="item-icon" alt="Helmet">
+                        <div class="item-info">
+                            <div class="item-name">6LV Kaska</div>
+                            <div class="item-price">💰 3,000</div>
+                        </div>
+                    </div>
+                    <button class="add-cart-btn" onclick="addToCart('6LV Kaska (Level 3)', 3000, '🪖')">Savatga</button>
+                </div>
+            </div>
+
+            <div class="item">
+                <div class="item-content">
+                    <div class="item-left">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='70' font-size='70'%3E🎒%3C/text%3E%3C/svg%3E" class="item-icon" alt="Backpack">
+                        <div class="item-info">
+                            <div class="item-name">6LV Sumka</div>
+                            <div class="item-price">💰 2,000</div>
+                        </div>
+                    </div>
+                    <button class="add-cart-btn" onclick="addToCart('6LV Sumka (Level 3)', 2000, '🎒')">Savatga</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="category">
+        <div class="category-title">🔫 Qurollar</div>
+        <div class="items-grid">
+            <div class="item">
+                <div class="item-content">
+                    <div class="item-left">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='70' font-size='70'%3E🔫%3C/text%3E%3C/svg%3E" class="item-icon" alt="MK14">
+                        <div class="item-info">
+                            <div class="item-name">MK14</div>
+                            <div class="item-price">💰 2,000</div>
+                        </div>
+                    </div>
+                    <button class="add-cart-btn" onclick="addToCart('MK14 + O\'qlar', 2000, '🔫')">Savatga</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="category">
+        <div class="category-title">💎 Premium To'plamlar</div>
+        <div class="items-grid">
+            <div class="item pulse">
+                <span class="item-badge">BEST</span>
+                <div class="item-content">
+                    <div class="item-left">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='70' font-size='70'%3E💎%3C/text%3E%3C/svg%3E" class="item-icon" alt="Full Set">
+                        <div class="item-info">
+                            <div class="item-name">Full Premium Set</div>
+                            <div class="item-price">💰 10,000</div>
+                        </div>
+                    </div>
+                    <button class="add-cart-btn" onclick="addToCart('Full Set: 6LV Jihozlar + MK14', 10000, '💎')">Savatga</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="cart-button" onclick="toggleCart()">
+    <span class="cart-icon">🛒</span>
+    <span class="cart-count" id="cart-count">0</span>
+</div>
+
+<div class="cart-modal" id="cart-modal">
+    <div class="cart-header">
+        <h2>🛒 Savatcha</h2>
+        <span class="close-cart" onclick="toggleCart()">✕</span>
+    </div>
+    <div class="cart-items" id="cart-items">
+        <div class="empty-cart">
+            <div class="empty-cart-icon">🛒</div>
+            <p>Savatingiz bo'sh</p>
+        </div>
+    </div>
+    <div class="cart-total">
+        <div class="label">Jami narx</div>
+        <div class="amount" id="cart-total">0 UZS</div>
+    </div>
+    <button class="checkout-btn" onclick="checkout()">✅ Sotib olish</button>
+</div>
+
+<div id="notification">
+    <span>✅</span>
+    <span id="notif-text"></span>
+</div>
+
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script>
+let tg = window.Telegram.WebApp;
+tg.expand();
+tg.MainButton.hide();
+
+let cart = [];
+
+function addToCart(itemName, price, icon) {
+    event.stopPropagation();
+    
+    cart.push({ item: itemName, price: price, icon: icon });
+    updateCartDisplay();
+    showNotification(icon + ' ' + itemName + ' savatga qo\'shildi!');
+
+    if (tg) {
+        tg.sendData(JSON.stringify({
+            action: 'add_to_cart',
+            item: itemName,
+            price: price,
+            icon: icon
+        }));
+    }
+}
+
+function updateCartDisplay() {
+    const cartCount = document.getElementById('cart-count');
+    const cartItems = document.getElementById('cart-items');
+    const cartTotal = document.getElementById('cart-total');
+
+    cartCount.textContent = cart.length;
+
+    if (cart.length === 0) {
+        cartItems.innerHTML = '<div class="empty-cart"><div class="empty-cart-icon">🛒</div><p>Savatingiz bo\'sh</p></div>';
+        cartTotal.textContent = '0 UZS';
+    } else {
+        let total = 0;
+        cartItems.innerHTML = '';
+        
+        cart.forEach(function(item, index) {
+            total += item.price;
+            cartItems.innerHTML += '<div class="cart-item"><div class="cart-item-info"><img src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Ctext y=\'70\' font-size=\'70\'%3E' + item.icon + '%3C/text%3E%3C/svg%3E" class="cart-item-icon"><div class="cart-item-name">' + item.item + '</div></div><div class="cart-item-price">' + item.price + ' UZS</div><span class="remove-item" onclick="removeFromCart(' + index + ')">🗑</span></div>';
+        });
+
+        cartTotal.textContent = total.toLocaleString() + ' UZS';
+    }
+}
+
+function removeFromCart(index) {
+    const removed = cart.splice(index, 1)[0];
+    updateCartDisplay();
+    showNotification(removed.icon + ' O\'chirildi');
+}
+
+function toggleCart() {
+    const modal = document.getElementById('cart-modal');
+    modal.classList.toggle('show');
+}
+
+function checkout() {
+    if (cart.length === 0) {
+        showNotification('⚠️ Savat bo\'sh!');
+        return;
+    }
+
+    if (tg) {
+        tg.sendData(JSON.stringify({
+            action: 'checkout',
+            items: cart
+        }));
+        
+        showNotification('✅ Buyurtma yuborilmoqda...');
+        
+        setTimeout(function() {
+            cart = [];
+            updateCartDisplay();
+            toggleCart();
+            tg.close();
+        }, 1000);
+    } else {
+        alert("Telegram WebApp mavjud emas!");
+    }
+}
+
+function showNotification(message) {
+    const notif = document.getElementById('notification');
+    const notifText = document.getElementById('notif-text');
+    notifText.textContent = message;
+    notif.classList.add('show');
+
+    setTimeout(function() {
+        notif.classList.remove('show');
+    }, 2500);
+}
+
+updateCartDisplay();
+document.body.style.userSelect = 'none';
+document.body.style.webkitUserSelect = 'none';
+</script>
+
+</body>
+</html>
